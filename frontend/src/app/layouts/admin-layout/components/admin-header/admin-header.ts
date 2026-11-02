@@ -13,7 +13,7 @@ export class AdminHeader {
 
   onToggle(){
     this.toggleSidebar.emit();
-  }// parent ulla toggleSidebar function call cheyyunnu
+  }
 
   onLogout(){
     this.logout.emit();

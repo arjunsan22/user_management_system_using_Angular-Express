@@ -1,0 +1,45 @@
+<header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    
+    <!-- Left: Brand Logo & Navigation Links -->
+    <div class="flex items-center gap-8">
+      <span class="text-xl font-bold text-indigo-600 tracking-wide">USER PORTAL</span>
+
+      <nav class="flex items-center gap-2">
+        <!-- Home Link -->
+        <a 
+          routerLink="/user/home" 
+          routerLinkActive="text-indigo-600 bg-indigo-50 font-semibold" 
+          class="px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition">
+          Home
+        </a>
+
+        <!-- My Profile Link -->
+        <a 
+          routerLink="/user/profile" 
+          routerLinkActive="text-indigo-600 bg-indigo-50 font-semibold" 
+          class="px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition">
+          My Profile
+        </a>
+      </nav>
+    </div>
+
+    <!-- Right: User Avatar & Logout Button -->
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
+          U
+        </div>
+        <span class="text-sm font-medium text-gray-700">User</span>
+      </div>
+
+      <!-- Logout click aavumbol onLogout() call cheyyunnu -->
+      <button 
+        (click)="onLogout()" 
+        class="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg border border-red-200 transition cursor-pointer">
+        Logout
+      </button>
+    </div>
+
+  </div>
+</header>

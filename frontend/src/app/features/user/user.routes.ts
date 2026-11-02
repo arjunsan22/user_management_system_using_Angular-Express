@@ -7,7 +7,7 @@ export const USER_ROUTES: Routes = [
     loadComponent: () => import('../../layouts/user-layout/user-layout').then(m => m.UserLayout),
     children: [
       {
-        path: 'Home',
+        path: 'home',
         loadComponent: () => import('./pages/home/home').then(m => m.Home)
       },
       {
@@ -16,7 +16,7 @@ export const USER_ROUTES: Routes = [
       },
       {
         path: '',
-        redirectTo: 'Home',
+        redirectTo: 'home',
         pathMatch: 'full'
       }
     ]

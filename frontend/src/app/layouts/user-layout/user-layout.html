@@ -1,5 +1,10 @@
-<div class="user-wrapper">
-  <h2>User Layout (Header & Footer later)</h2>
-  <!-- Child pages (Dashboard, Profile) ivide aanu display aavuka -->
-  <router-outlet></router-outlet>
+<div class="min-h-screen flex flex-col bg-gray-50 font-sans">
+  <app-user-header (logout)="onLogout()"></app-user-header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-user-footer></app-user-footer>
+
 </div>

@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { RouterOutlet, Router } from '@angular/router';
 import {AdminSidebar} from './components/admin-sidebar/admin-sidebar';
 import {AdminHeader} from './components/admin-header/admin-header';
 
@@ -11,6 +11,8 @@ import {AdminHeader} from './components/admin-header/admin-header';
 })
 export class AdminLayout {
 
+  private router = inject(Router);
+
   isSidebarOpen = signal<boolean>(true);
 
   toggleSidebar() {
@@ -19,6 +21,7 @@ export class AdminLayout {
 
   onLogout(){
     console.log('  logged out');
+    this.router.navigate(['/login']);
     alert('Admin logged out successfully');
   }
 }
