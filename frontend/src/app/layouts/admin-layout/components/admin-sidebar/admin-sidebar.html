@@ -1,0 +1,48 @@
+<aside 
+  class="bg-slate-900 text-white transition-all duration-300 flex flex-col justify-between h-full"
+  [class.w-64]="isOpen()"
+  [class.w-20]="!isOpen()">
+  
+  <!-- Sidebar Top: Brand Logo -->
+  <div>
+    <div class="h-16 flex items-center justify-between px-4 border-b border-slate-800">
+      @if (isOpen()) {
+        <span class="text-xl font-bold tracking-wider text-indigo-400">ADMIN PANEL</span>
+      } @else {
+        <span class="text-xl font-bold text-indigo-400 mx-auto">🛡️</span>
+      }
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="mt-6 px-3 space-y-2">
+      <!-- Dashboard Link -->
+      <a 
+        routerLink="/admin/dashboard"
+        routerLinkActive="bg-indigo-600 text-white" 
+        class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-300 hover:bg-slate-800 transition">
+        <span class="text-xl">📊</span>
+        @if (isOpen()) {
+          <span class="font-medium text-sm">Dashboard</span>
+        }
+      </a>
+
+      <!-- Users Link -->
+      <a 
+        routerLink="/admin/users" 
+        routerLinkActive="bg-indigo-600 text-white" 
+        class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-300 hover:bg-slate-800 transition">
+        <span class="text-xl">👥</span>
+        @if (isOpen()) {
+          <span class="font-medium text-sm">Users</span>
+        }
+      </a>
+    </nav>
+  </div>
+
+  <!-- Sidebar Footer -->
+  <div class="p-4 border-t border-slate-800">
+    @if (isOpen()) {
+      <p class="text-xs text-slate-500 text-center">User Management</p>
+    }
+  </div>
+</aside>

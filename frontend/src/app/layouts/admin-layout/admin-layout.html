@@ -1,1 +1,32 @@
-<p>admin-layout works!</p>
+<div class="flex h-screen bg-gray-100 overflow-hidden font-sans">
+
+  <app-admin-sidebar [isOpen]="isSidebarOpen()"/>
+
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <app-admin-header 
+      (toggleSidebar)="toggleSidebar()" 
+      (logout)="onLogout()"/>
+
+    <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+      <div class="max-w-7xl mx-auto">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+
+</div>
+<!-- • ഇടതുവശത്തുള്ള (toggleSidebar): ഇത് ചൈൽഡ് ആയ ഹെഡർ കമ്പോണന്റിലെ toggleSidebar = output<void>(); എന്ന ഔട്ട്പുട്ടിനെയാണ് സൂചിപ്പിക്കുന്നത്.
+• വലതുവശത്തുള്ള "toggleSidebar()": ഇത് parent കമ്പോണന്റിന്റെ(admin-layout) TypeScript ഫയലിലുള്ള toggleSidebar() എന്ന ഫങ്ക്ഷനെയാണ് സൂചിപ്പിക്കുന്നത്.
+
+
+ഇവന്റ് പാസ്സിംഗ് (The Flow)
+
+ഹെഡറിലെ ബട്ടൺ അമർത്തുമ്പോൾ മുതൽ പേരന്റ് ഫങ്ക്ഷൻ വർക്ക് ആകുന്നത് വരെയുള്ള വഴി ഇതാണ്: (hamberger menu button)
+1. യൂസർ ഹെഡറിലെ ബട്ടൺ ക്ലിക്ക് ചെയ്യുന്നു → അത് ഹെഡറിലെ onToggle() ഫങ്ക്ഷനെ വിളിക്കുന്നു.
+2. ഹെഡർ കമ്പോണന്റ് this.toggleSidebar.emit(); എന്ന് പറഞ്ഞ് ഒരു സിഗ്നൽ പുറത്തേക്ക് വിടുന്നു.
+3. പേരന്റ് കമ്പോണന്റ് ഈ സിഗ്നലിനെ HTML-ൽ വെച്ച് പിടിക്കുന്നു ((toggleSidebar) വഴി).
+4. സിഗ്നൽ കിട്ടിയ ഉടനെ പേരന്റ് കമ്പോണന്റ് അതിന്റെ ഉള്ളിലുള്ള toggleSidebar() ഫങ്ക്ഷൻ റൺ ചെയ്യുന്നു.
+
+ചുരുക്കത്തിൽ:
+
+ഹെഡർ കമ്പോണന്റ് ഒരു തപാൽക്കാരനെപ്പോലെ emit() വഴി ഒരു കത്ത് (Signal) പുറത്തേക്ക് വിടുന്നു. HTML-ലെ കോഡ് വഴി ആ കത്ത് കിട്ടുമ്പോൾ പേരന്റ് കമ്പോണന്റ് അതിന്റെ സ്വന്തം ഫങ്ക്ഷൻ ആയ toggleSidebar() പ്രവർത്തിപ്പിക്കുന്നു. -->
