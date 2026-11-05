@@ -92,3 +92,112 @@ Browser refresh cheyyumbol Angular app memory-il ninnu full restart aavunnu. Pak
 
 
 --------------------------------------------------------------
+
+
+---------
+
+
+
+
+Generics ഇവിടെ എന്തിനാണ് ഉപയോഗിച്ചത് എന്ന് വ്യക്തമായി മനസ്സിലാക്കാൻ, ആദ്യം ഇത് ഉപയോഗിച്ചില്ലെങ്കിൽ നമ്മൾ എത്രമാത്രം കഷ്ടപ്പെടേണ്ടി വരുമായിരുന്നു എന്ന് നോക്കാം.
+
+Generics (<T>) ഇവിടെ ഉപയോഗിച്ചില്ലായിരുന്നെങ്കിൽ എന്ത് സംഭവിക്കുമായിരുന്നു?
+
+നിങ്ങളുടെ ബാക്കെൻഡ് തരുന്ന റെസ്പോൺസ് നോക്കൂ. എല്ലാ റിക്വസ്റ്റിലും statusCode, message, success എന്നിവ ഒരുപോലെയാണ്. എന്നാൽ ഉള്ളിലെ data മാത്രം മാറിമറിയുന്നു.
+Generics ഇല്ലായിരുന്നെങ്കിൽ, നിങ്ങൾക്ക് ഓരോ ഫംഗ്ഷനും വേണ്ടി ഇതുപോലെ വെവ്വേറെ 4 ഇന്റർഫേസുകൾ എഴുതേണ്ടി വരുമായിരുന്നു:
+typescript
+// 1. യൂസർ ലിസ്റ്റിന് വേണ്ടി മാത്രം
+interface GetUsersResponse {
+  statusCode: number; success: boolean; message: string;
+  data: User[]; // ഇവിടെ User[] എന്ന് ഫിക്സ് ചെയ്യണം
+}
+
+// 2. പുതിയ യൂസറെ ആഡ് ചെയ്യുമ്പോൾ
+interface AddUserResponse {
+  statusCode: number; success: boolean; message: string;
+  data: User; // ഇവിടെ ഒരൊറ്റ User എന്ന് ഫിക്സ് ചെയ്യണം
+}
+
+// 3. ഡിലീറ്റ് ചെയ്യുമ്പോൾ
+interface DeleteUserResponse {
+  statusCode: number; success: boolean; message: string;
+  data: void; // ഇവിടെ void എന്ന് ഫിക്സ് ചെയ്യണം
+}
+Use code with caution.
+നോക്കൂ, ഒരേ കോഡ് തന്നെ വീണ്ടും വീണ്ടും എഴുതേണ്ടി വരുന്നു (Code Duplication). ഇത് ഒഴിവാക്കാനാണ് ApiResponse<T> എന്ന ഒരൊറ്റ Generics ഇന്റർഫേസ് നമ്മൾ ഉണ്ടാക്കിയത്.
+
+ഇനി ഈ കോഡ് ഓരോ വരിയായി കൃത്യമായി മനസ്സിലാക്കാം:
+
+typescript
+export interface ApiResponse<T> {
+  statusCode: number;
+  data: T;          // <-- ഇവിടെ 'T' എന്ന് കൊടുത്തതുകൊണ്ട് ഇതിലേക്ക് ഏത് ഡാറ്റയും വരാം.
+  message: string;
+  success: boolean;
+}
+Use code with caution.
+ഇനി താഴെയുള്ള ഫംഗ്ഷനുകളിൽ ഈ T എങ്ങനെയാണ് മാസ്ക് മാറ്റുന്നത് എന്ന് നോക്കാം:
+
+1. getUsers() — യൂസർമാരുടെ ലിസ്റ്റ് എടുക്കാൻ
+
+typescript
+getUsers(): Observable<ApiResponse<User[]>> {
+  return this.http.get<ApiResponse<User[]>>(this.apiUrl);
+}
+Use code with caution.
+• ഇവിടെ എന്ത് സംഭവിക്കുന്നു: നമ്മൾ ApiResponse<User[]> എന്ന് കൊടുത്തു. അതായത്, T എന്ന സ്ഥാനത്ത് User[] (Array of Users) വരണം എന്ന് TypeScript-നോട് പറഞ്ഞു.
+• ഗുണം: കമ്പോണന്റിൽ നമ്മൾ ഈ ഫംഗ്ഷൻ സബ്‌സ്‌ക്രൈബ് ചെയ്യുമ്പോൾ, res.data എന്നത് ഒരു ലിസ്റ്റ് (Array) ആണെന്ന് ആംഗുലറിന് കൃത്യമായി മനസ്സിലാകും. നമുക്ക് അതിൽ .map() അല്ലെങ്കിൽ forEach ഒക്കെ ധൈര്യമായി ഉപയോഗിക്കാം.
+
+2. addUser() — പുതിയ യൂസറെ ചേർക്കാൻ
+
+typescript
+addUser(userData: ...): Observable<ApiResponse<User>> {
+  return this.http.post<ApiResponse<User>>(this.apiUrl, userData);
+}
+Use code with caution.
+• ഇവിടെ എന്ത് സംഭവിക്കുന്നു: ഇവിടെ നമ്മൾ ApiResponse<User> എന്നാണ് കൊടുത്തത് ([] ഇല്ല). അതായത് T എന്ന സ്ഥാനത്ത് ഒരൊറ്റ User ഒബ്ജക്റ്റ് മാത്രം.
+• ഗുണം: പുതിയ യൂസറെ ക്രിയേറ്റ് ചെയ്തു കഴിഞ്ഞാൽ ബാക്കെൻഡ് ആ പുതിയ യൂസറുടെ ഡാറ്റ മാത്രം തിരിച്ചു തരും. res.data.name എന്ന് അടിച്ചാൽ ടൈപ്പ്സ്ക്രിപ്റ്റ് തെറ്റ് കാണിക്കില്ല, കാരണം അതിൽ ഒരു യൂസർ ഉണ്ടെന്ന് അതിനറിയാം.
+
+3. deleteUser() — യൂസറെ ഡിലീറ്റ് ചെയ്യാൻ
+
+typescript
+deleteUser(id: number): Observable<ApiResponse<void>> {
+  return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`);
+}
+Use code with caution.
+• ഇവിടെ എന്ത് സംഭവിക്കുന്നു: ഡിലീറ്റ് ചെയ്യുമ്പോൾ ബാക്കെൻഡിൽ നിന്ന് ഡാറ്റയൊന്നും തിരിച്ചു വരേണ്ടതില്ല. അതുകൊണ്ട് T എന്ന സ്ഥാനത്ത് നമ്മൾ void (ഒന്നുമില്ല) എന്ന് കൊടുത്തു.
+• ഗുണം: ഇതിനുള്ളിൽ data ഒന്നും ഉണ്ടാകില്ലെന്ന് ടൈപ്പ്സ്ക്രിപ്റ്റിന് മനസ്സിലാകും.
+
+ഒരു ചെറിയ സംശയം: getDashboardStats()-ൽ എന്തുകൊണ്ട് Generics ഉപയോഗിച്ചില്ല?
+
+നിങ്ങൾ ശ്രദ്ധിച്ചോ എന്ന് അറിയില്ല, ഒന്നാമത്തെ ഫംഗ്ഷനായ getDashboardStats()-ൽ ApiResponse<T> അല്ല ഉപയോഗിച്ചിരിക്കുന്നത്, പകരം StatsResponse ആണ് ഉപയോഗിച്ചിരിക്കുന്നത്.
+typescript
+export interface StatsResponse {
+  statusCode: number;
+  data: {
+    stats: DashboardStats;
+    recentUsers: RecentUser[];
+  };
+  message: string;
+  success: boolean;
+}
+Use code with caution.
+കാരണം: ഡാഷ്‌ബോർഡിന്റെ ബാക്കെൻഡ് റെസ്പോൺസ് ഘടന വളരെ സങ്കീർണ്ണമാണ് (അതിനുള്ളിൽ stats, recentUsers എന്നിങ്ങനെ രണ്ട് വ്യത്യസ്ത സാധനങ്ങൾ ഒന്നിച്ച് വരുന്നുണ്ട്). അതിനെ എളുപ്പത്തിൽ ഒരു T വെച്ച് മാത്രം സൂചിപ്പിക്കാൻ പറ്റാത്തതുകൊണ്ട്, അതിന് വേണ്ടി മാത്രം നമ്മൾ ഒരു പ്രത്യേക ഇന്റർഫേസ് (StatsResponse) ഉണ്ടാക്കി ഉപയോഗിച്ചു.
+
+ചുരുക്കത്തിൽ:
+
+ഈ ഫയലിൽ Generics ഉപയോഗിച്ചതിന്റെ ഒരേയൊരു ലക്ഷ്യം: statusCode, message, success എന്നീ ഫീൽഡുകൾ വീണ്ടും വീണ്ടും എഴുതി സമയം കളയാതെ, ഒരൊറ്റ ബോക്സ് (ApiResponse) ഉണ്ടാക്കി അതിലേക്ക് ആവശ്യാനുസരണം 
+
+
+
+------------------------------------
+
+
+# why void in ngOnInit()
+
+ngOnInit എന്നത് ഒരു കമ്പോണന്റ് ലോഡ് ആകുമ്പോൾ ആംഗുലർ തനിയെ വിളിക്കുന്ന ഒരു ഫംഗ്ഷൻ മാത്രമാണ്. ആംഗുലറിന് ഇതിൽ നിന്ന് യാതൊരു വാല്യൂവും തിരിച്ചു കിട്ടേണ്ട ആവശ്യമില്ല. അതുകൊണ്ട് തന്നെയാണ് അതിന് : void എന്ന് കൊടുക്കുന്നത്.
+
+
+
+--------------------------------------------
+
