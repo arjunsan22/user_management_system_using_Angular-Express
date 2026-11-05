@@ -12,5 +12,5 @@ export const refreshCookieOptions = {
   httpOnly: true,
   secure: isProduction,
   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-  maxAge: 5 * 24 * 60 * 60 * 1000, 
+  maxAge: 2 * 24 * 60 * 60 * 1000, 
 };

@@ -18,7 +18,7 @@ export const generateTokens = (user) => {
     },
 
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "5d" }
+    { expiresIn: "2d" }
   );
 
   return { accessToken, refreshToken };
