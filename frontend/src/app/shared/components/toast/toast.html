@@ -1,0 +1,32 @@
+<div class="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div 
+      class="pointer-events-auto flex items-center justify-between p-4 rounded-xl shadow-xl border backdrop-blur-md transition-all duration-300 transform translate-y-0"
+      [class.bg-emerald-50]="toast.type === 'success'"
+      [class.border-emerald-200]="toast.type === 'success'"
+      [class.text-emerald-800]="toast.type === 'success'"
+      [class.bg-red-50]="toast.type === 'error'"
+      [class.border-red-200]="toast.type === 'error'"
+      [class.text-red-800]="toast.type === 'error'"
+      [class.bg-amber-50]="toast.type === 'warning'"
+      [class.border-amber-200]="toast.type === 'warning'"
+      [class.text-amber-800]="toast.type === 'warning'"
+      [class.bg-indigo-50]="toast.type === 'info'"
+      [class.border-indigo-200]="toast.type === 'info'"
+      [class.text-indigo-800]="toast.type === 'info'">
+      
+      <!-- Icon & Message -->
+      <div class="flex items-center gap-3">
+        <span class="text-lg">{{ getIcon(toast.type) }}</span>
+        <p class="text-sm font-semibold tracking-tight">{{ toast.message }}</p>
+      </div>
+
+      <!-- Close Button -->
+      <button 
+        (click)="toastService.remove(toast.id)"
+        class="text-gray-400 hover:text-gray-700 text-sm font-bold ml-4 p-1 rounded-lg hover:bg-black/5 transition">
+        ✕
+      </button>
+    </div>
+  }
+</div>

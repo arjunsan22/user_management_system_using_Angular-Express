@@ -1,1 +1,154 @@
-<p>dashboard works!</p>
+<div class="space-y-6">
+
+  <!-- 1. Top Welcome Banner -->
+  <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-2xl p-6 text-white shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight">
+        Welcome back, {{ currentUser()?.name || 'Administrator' }}! 👋
+      </h1>
+      <p class="text-indigo-100 text-sm mt-1">
+        Here is what is happening across your User Management System today.
+      </p>
+    </div>
+    <div>
+      <a 
+        routerLink="/admin/users" 
+        class="inline-flex items-center gap-2 bg-white text-indigo-700 px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-indigo-50 transition shadow-sm">
+        <span>👥</span>
+        <span>Manage Users</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+  <app-spinner message="Loading Dashboard statistics..." />
+  }
+
+  <!-- Error State -->
+  @if (errorMessage()) {
+    <div class="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-center justify-between">
+      <span>⚠️ {{ errorMessage() }}</span>
+      <button (click)="loadStats()" class="font-semibold underline hover:no-underline">Retry</button>
+    </div>
+  }
+
+  <!-- Main Content (Stats Cards + Recent Users) -->
+  @if (!isLoading() && stats()) {
+
+    <!-- 2. KPI Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      
+      <!-- Total Users -->
+      <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Users</span>
+          <span class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">👥</span>
+        </div>
+        <div class="mt-3">
+          <h2 class="text-3xl font-extrabold text-gray-800">{{ stats()?.totalUsers }}</h2>
+          <p class="text-xs text-emerald-600 font-medium mt-1">● Active accounts</p>
+        </div>
+      </div>
+
+      <!-- Admins -->
+      <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Admins</span>
+          <span class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg">🛡️</span>
+        </div>
+        <div class="mt-3">
+          <h2 class="text-3xl font-extrabold text-gray-800">{{ stats()?.totalAdmins }}</h2>
+          <p class="text-xs text-purple-600 font-medium mt-1">● System managers</p>
+        </div>
+      </div>
+
+      <!-- Regular Users -->
+      <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Normal Users</span>
+          <span class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">👤</span>
+        </div>
+        <div class="mt-3">
+          <h2 class="text-3xl font-extrabold text-gray-800">{{ stats()?.regularUsers }}</h2>
+          <p class="text-xs text-emerald-600 font-medium mt-1">● Standard members</p>
+        </div>
+      </div>
+
+      <!-- System Health -->
+      <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">API & Database</span>
+          <span class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg">⚡</span>
+        </div>
+        <div class="mt-3">
+          <h2 class="text-2xl font-extrabold text-emerald-600">Connected</h2>
+          <p class="text-xs text-gray-500 font-medium mt-1">● MySQL & Express live</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 3. Recent Users Preview Section -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-gray-800">Recent Users</h3>
+          <p class="text-xs text-gray-400 mt-0.5">Latest accounts created in the system</p>
+        </div>
+        <a routerLink="/admin/users" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">
+          View All Users &rarr;
+        </a>
+      </div>
+
+      <!-- Users Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-gray-600">
+          <thead class="bg-gray-50 text-xs uppercase text-gray-400 font-semibold border-b border-gray-100">
+            <tr>
+              <th class="px-6 py-3.5">User</th>
+              <th class="px-6 py-3.5">Email</th>
+              <th class="px-6 py-3.5">Role</th>
+              <th class="px-6 py-3.5">Joined Date</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            @for (user of recentUsers(); track user.id) {
+              <tr class="hover:bg-gray-50/50 transition">
+                <td class="px-6 py-4 font-medium text-gray-800 flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs uppercase">
+                    {{ user.name.charAt(0) }}
+                  </div>
+                  <span>{{ user.name }}</span>
+                </td>
+                <td class="px-6 py-4 text-gray-500">{{ user.email }}</td>
+                <td class="px-6 py-4">
+                  @if (user.role === 'admin') {
+                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+                      Admin
+                    </span>
+                  } @else {
+                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      User
+                    </span>
+                  }
+                </td>
+                <td class="px-6 py-4 text-gray-400 text-xs">
+                  {{ user.created_at | date:'mediumDate' }}
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="px-6 py-8 text-center text-gray-400 text-sm">
+                  No users found in database.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  }
+
+</div>

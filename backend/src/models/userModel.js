@@ -1,6 +1,7 @@
+
 import pool from '../config/db.js';
 
-// Get all users (excluding passwords for safety)
+
 export const getAllUsers = async () => {
   const [rows] = await pool.execute(
     `SELECT id, name, email, role, created_at, updated_at 
@@ -10,7 +11,7 @@ export const getAllUsers = async () => {
   return rows;
 };
 
-// Find user by email (Login check cheyyan)
+
 export const findByEmail = async (email) => {
   const [rows] = await pool.execute(
     `SELECT * FROM users WHERE email = ?`,
@@ -19,7 +20,7 @@ export const findByEmail = async (email) => {
   return rows[0];
 };
 
-// Find user by ID
+
 export const findById = async (id) => {
   const [rows] = await pool.execute(
     `SELECT id, name, email, role, created_at FROM users WHERE id = ?`,
@@ -28,7 +29,7 @@ export const findById = async (id) => {
   return rows[0];
 };
 
-// Create a new user
+
 export const createUser = async ({ name, email, password, role = 'user' }) => {
   const [result] = await pool.execute(
     `INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)`,
@@ -36,6 +37,51 @@ export const createUser = async ({ name, email, password, role = 'user' }) => {
   );
   return result.insertId;
 };
+
+
+export const getDashboardStats = async () => {
+  const [rows] = await pool.execute(`
+    SELECT
+      COUNT(*) AS totalUsers,
+      COALESCE(SUM(CASE WHEN role = 'admin' THEN 1 ELSE 0 END), 0) AS totalAdmins,
+      COALESCE(SUM(CASE WHEN role = 'user' THEN 1 ELSE 0 END), 0) AS regularUsers
+    FROM users
+  `);
+  return rows[0];
+};
+
+
+export const getRecentUsers = async () => {
+  const [rows] = await pool.execute(`
+    SELECT id, name, email, role, created_at 
+    FROM users 
+    ORDER BY created_at DESC 
+    LIMIT 5
+  `);
+  return rows;
+};
+
+
+
+
+export const updateUser = async (id, { name, email, role }) => {
+  const [result] = await pool.execute(
+    `UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?`,
+    [name, email, role, id]
+  );
+  return result.affectedRows;
+};
+
+
+export const deleteUser = async (id) => {
+  const [result] = await pool.execute(
+    `DELETE FROM users WHERE id = ?`,
+    [id]
+  );
+  return result.affectedRows;
+};
+
+
 
 // Update user's refresh token on login or logout
 export const updateRefreshToken = async (userId, refreshToken) => {

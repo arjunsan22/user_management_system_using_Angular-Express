@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import {FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Auth } from '../../../../core/services/auth';
+import { ToastService } from '../../../../core/services/toast'
 
 @Component({
   imports: [ReactiveFormsModule],
@@ -14,6 +15,7 @@ export class Login {
   private fb = inject(FormBuilder);
   private auth = inject(Auth);
   private router = inject(Router);
+  private toast = inject(ToastService);
 
   isLoading = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
@@ -48,6 +50,8 @@ export class Login {
       next: (response) =>{
         this.isLoading.set(false);
         const user = response.data;
+
+          this.toast.success(`Welcome back, ${user.name}!`);
 
         if (user.role === "admin"){
           this.router.navigate(['/admin/dashboard']);
