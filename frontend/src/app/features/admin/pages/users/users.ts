@@ -118,21 +118,29 @@ export class Users implements OnInit{
     this.isModalOpen.set(false);
     this.userForm.reset();
   }
+
   // Save (Handles both Add & Edit!)
+  
   onSubmit(): void {
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
       return;
     }
+
     this.isSubmitting.set(true);
+    
     const formValues = this.userForm.getRawValue();
+    
     if (this.isEditMode()) {
       // EDIT USER API
       const id = this.selectedUserId()!;
+     
       this.adminService.updateUser(id, {
+
         name: formValues.name,
         email: formValues.email,
         role: formValues.role
+      
       }).subscribe({
         next: (res) => {
           this.isSubmitting.set(false);
@@ -140,24 +148,28 @@ export class Users implements OnInit{
           this.closeModal();
           this.loadUsers(); // Refresh list
         },
+      
         error: (err) => {
           this.isSubmitting.set(false);
           this.toast.error(err.error?.message || 'Failed to update user');
         }
+      
       });
     } else {
       // ADD USER API
+    
       this.adminService.addUser({
         name: formValues.name,
         email: formValues.email,
         password: formValues.password,
         role: formValues.role
-      }).subscribe({
+      })
+      .subscribe({
         next: (res) => {
           this.isSubmitting.set(false);
           this.toast.success('User created successfully!');
           this.closeModal();
-          this.loadUsers(); // Refresh list
+          this.loadUsers(); 
         },
         error: (err) => {
           this.isSubmitting.set(false);
@@ -166,23 +178,29 @@ export class Users implements OnInit{
       });
     }
   }
-  // 3. DELETE MODAL HANDLERS
+
+  //  DELETE MODAL HANDLERS
+  
   openDeleteModal(user: User): void {
     this.userToDelete.set(user);
     this.isDeleteModalOpen.set(true);
   }
+
   closeDeleteModal(): void {
     this.isDeleteModalOpen.set(false);
     this.userToDelete.set(null);
   }
+
   confirmDelete(): void {
+
     const user = this.userToDelete();
+    
     if (!user) return;
     this.adminService.deleteUser(user.id).subscribe({
       next: () => {
         this.toast.success(`User "${user.name}" deleted successfully!`);
         this.closeDeleteModal();
-        this.loadUsers(); // Refresh list
+        this.loadUsers();
       },
       error: (err) => {
         this.toast.error(err.error?.message || 'Failed to delete user');
