@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@ngrx/store": "^22.0.1",
+    "@ngrx/store-devtools": "^22.0.1"
+  }
+}
