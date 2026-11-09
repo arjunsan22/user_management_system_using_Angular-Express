@@ -82,6 +82,10 @@ export const deleteUser = async (id) => {
 };
 
 
+// for update password
+export const updatePassword = async (userId, hashedPassword) => {
+  await pool.execute(`UPDATE users SET password = ? WHERE id = ?`, [hashedPassword, userId]);
+};
 
 // Update user's refresh token on login or logout
 export const updateRefreshToken = async (userId, refreshToken) => {

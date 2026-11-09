@@ -106,3 +106,51 @@ export const removeUser = asyncHandler(async (req, res) => {
     new ApiResponse(200, {}, 'User deleted successfully')
   );
 });
+
+
+
+// GET /api/profile - Logged-in user's own profile
+export const getProfile = asyncHandler(async (req, res) => {
+  // req.user already protect middleware vazhi set aayittundu
+  return res.status(200).json(
+    new ApiResponse(200, req.user, 'Profile fetched successfully')
+  );
+});
+
+// PUT /api/profile - Update own profile (Name, Email, optional Password)
+export const updateProfile = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const { name, email, currentPassword, newPassword } = req.body;
+
+  if (!name || !email) {
+    throw new ApiError(400, 'Name and Email are required');
+  }
+
+  
+  if (newPassword) {
+    if (!currentPassword) {
+      throw new ApiError(400, 'Current password is required to set a new password');
+    }
+
+    const userFromDb = await userModel.findByEmail(req.user.email);
+    const isPasswordMatch = await bcrypt.compare(currentPassword, userFromDb.password);
+    if (!isPasswordMatch) {
+      throw new ApiError(400, 'Current password is incorrect');
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    await userModel.updateUser(userId, { name, email, role: req.user.role });
+await userModel.updatePassword(userId, hashedNewPassword);
+
+  } else {
+    await userModel.updateUser(userId, { name, email, role: req.user.role });
+  }
+
+  const updatedUser = await userModel.findById(userId);
+  delete updatedUser.password;
+
+  return res.status(200).json(
+    new ApiResponse(200, updatedUser, 'Profile updated successfully')
+  );
+});
