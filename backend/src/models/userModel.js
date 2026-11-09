@@ -23,7 +23,7 @@ export const findByEmail = async (email) => {
 
 export const findById = async (id) => {
   const [rows] = await pool.execute(
-    `SELECT id, name, email, role, created_at FROM users WHERE id = ?`,
+    `SELECT id, name, email, role, refresh_token, created_at FROM users WHERE id = ?`,
     [id]
   );
   return rows[0];

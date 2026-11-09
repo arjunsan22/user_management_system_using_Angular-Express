@@ -1,1 +1,77 @@
-<p>home works!</p>
+<div class="space-y-6">
+
+  <!-- Welcome Hero Banner -->
+  <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl p-8 text-white shadow-lg flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+    <div class="space-y-2">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide uppercase">
+        <span>👤</span> User Portal
+      </div>
+      <h1 class="text-3xl font-extrabold tracking-tight">
+        Welcome back, {{ currentUser()?.name }}! 👋
+      </h1>
+      <p class="text-emerald-100 text-sm max-w-xl">
+        Manage your profile settings, personal information, and account security all in one place.
+      </p>
+    </div>
+
+    <div>
+      <a 
+        routerLink="/user/profile" 
+        class="inline-flex items-center gap-2 bg-white text-emerald-800 px-5 py-3 rounded-2xl font-bold text-sm hover:bg-emerald-50 transition shadow-sm cursor-pointer">
+        <span>✏️</span>
+        <span>Edit My Profile</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Account Info Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    
+    <!-- Account Status -->
+    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Account Status</span>
+        <span class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">✅</span>
+      </div>
+      <h3 class="text-xl font-bold text-gray-800">Active</h3>
+      <p class="text-xs text-emerald-600 font-medium mt-1">● Account verified and secure</p>
+    </div>
+
+    <!-- Assigned Role -->
+    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Access Level</span>
+        <span class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">🛡️</span>
+      </div>
+      <h3 class="text-xl font-bold text-gray-800 uppercase tracking-wide">
+        {{ currentUser()?.role }}
+      </h3>
+      <p class="text-xs text-gray-500 font-medium mt-1">● Standard user privileges</p>
+    </div>
+
+    <!-- Registered Email -->
+    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Registered Email</span>
+        <span class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg">📧</span>
+      </div>
+      <h3 class="text-base font-bold text-gray-800 truncate" title="{{ currentUser()?.email }}">
+        {{ currentUser()?.email }}
+      </h3>
+      <p class="text-xs text-gray-500 font-medium mt-1">● Primary notification address</p>
+    </div>
+
+  </div>
+
+  <!-- Security Tip Box -->
+  <div class="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-6 flex items-start gap-4">
+    <span class="text-2xl">💡</span>
+    <div>
+      <h4 class="font-bold text-indigo-900 text-sm">Security Recommendation</h4>
+      <p class="text-indigo-700/80 text-xs mt-1 leading-relaxed">
+        We recommend changing your password periodically to keep your account safe. You can update your password anytime from your Profile page.
+      </p>
+    </div>
+  </div>
+
+</div>

@@ -81,9 +81,15 @@ login(credentials: { email: string; password: string }): Observable<LoginRespons
       })
     );
   }
+
+// background il refresh token vechu puthiya access token edukkan ulla method
+refreshToken(): Observable<any> {
+  return this.http.post(`${this.apiUrl}/refresh-token`, {}, {
+    withCredentials: true
+  });
+}
   
 }
-
 
 
 

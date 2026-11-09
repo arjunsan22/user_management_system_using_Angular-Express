@@ -1,4 +1,5 @@
-import { Component, output } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
+import { Auth } from '../../../../core/services/auth';
 
 @Component({
   imports: [],
@@ -8,6 +9,9 @@ import { Component, output } from '@angular/core';
 })
 export class AdminHeader {
   
+  private auth = inject(Auth)
+
+  currentUser = this.auth.currentUser;
   toggleSidebar = output<void>(); // parent admin-layout lekku kodukkunnu
   logout = output<void>();
 
@@ -18,6 +22,5 @@ export class AdminHeader {
   onLogout(){
     this.logout.emit();
   }
-
 
 }
