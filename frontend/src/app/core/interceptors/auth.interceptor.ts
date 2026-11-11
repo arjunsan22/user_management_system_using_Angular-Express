@@ -8,27 +8,27 @@ export const authInterceptor: HttpInterceptorFn = (req, next)=> {
 
 const auth = inject(Auth);
   const router = inject(Router);
-  // 1. Ellaa outgoing requests-ilum automatically withCredentials: true attach cheyyunnu
+// automatically ella request num attach cheyyum withcredentials: true
   const authReq = req.clone({
     withCredentials: true
   });
+
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       
-      // 2. Backend 401 Unauthorized tharukayum, athu Login/Refresh request ALLENGILUM:
       if (
         error.status === 401 &&
         !req.url.includes('/login') &&
         !req.url.includes('/refresh-token')
       ) {
-        // 3. User ariyathe background-il /api/auth/refresh-token call cheyyunnu
+
         return auth.refreshToken().pipe(
           switchMap(() => {
-            // 4. Puthiya Access Token kitti! Ippo pazhaya request veendum RETRY cheyyunnu!
+            // ----- Puthiya Access Token kitti! Ippo pazhaya request veendum RETRY cheyyunnu!
             return next(authReq);
           }),
           catchError((refreshError) => {
-            // 5. Refresh token-um theernnu (5 days kazhinju) -> Force Logout!
+            //  Refresh token-um theernnu (5 days kazhinju) -> Force Logout!
             auth.logout().subscribe({
               next: () => router.navigate(['/login']),
               error: () => router.navigate(['/login'])

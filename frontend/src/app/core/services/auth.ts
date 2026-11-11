@@ -89,7 +89,7 @@ refreshToken(): Observable<any> {
   });
 }
   
-}
+} // this method called in both app.config.ts and auth.interceptor.ts 
 
 
 

@@ -72,7 +72,7 @@ function initializeAuth() {
 
 1. യൂസർ ബ്രൗസറിൽ വെബ്‌സൈറ്റ് ഓപ്പൺ ചെയ്യുന്നു.
 
-2. ആപ്പിന്റെ സ്ക്രീൻ കാണിക്കുന്നതിന് മുൻപ് ആംഗുലർ ഈ initializeAuth() ഫങ്ക്ഷൻ റൺ ചെയ്യുന്നു.
+2. ആപ്പിന്റെ സ്ക്രീൻ കാണിക്കുന്നതിന് മുൻപ് ആംഗുലർ ഈ initializeAuth() ഫങ്ക്ഷൻ റൺ ചെയ്യുന്നു. //  check app.config.ts 
 
 3. അത് നേരെ ബാക്കെൻഡിലെ /api/auth/me എന്ന യൂആർഎല്ലിലേക്ക് ഒരു കോൾ വിടുന്നു.
 
@@ -200,4 +200,41 @@ ngOnInit എന്നത് ഒരു കമ്പോണന്റ് ലോഡ�
 
 
 --------------------------------------------
+
+--------------------------
+400 series
+
+
+400	Bad Request
+401	Unauthorized
+402	Payment Required
+403	Forbidden
+404	Not Found
+405	Method Not Allowed
+429 Too Many Requests
+
+
+
+------------------------
+Main thing done ---
+
+1. Modern Angular 22 Architecture
+
+2. Angular Signals
+
+3. Component Architecture - input() and output() and Template Bindings: Property binding [ ] (Data Down) and Event binding ( )
+
+
+4. Routing & Lazy Loading
+
+5. Functional Route Protection (Guards)
+
+6. App Initialization (provideAppInitializer) - /api/auth/me
+(refresh aavumbol memory reset aayi user logged out aavunna issue pariharikaan provideAppInitializer implement cheythu.)
+
+7. Reactive Forms & Validations
+
+8. HTTP Interceptor & 401 Auto-Refresh - with switchMap
+
+9. Shared reusable ui components
 
